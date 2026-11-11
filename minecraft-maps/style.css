@@ -1,0 +1,89 @@
+:root {
+  --mc-dark: #1c130b;
+  --mc-wood: #3b2a1a;
+  --mc-text: #fff;
+  --mc-dim: #b9b9b9;
+  --mc-gold: #ffd83a;
+  --mc-green: #5d9c3a;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; background: var(--mc-wood); overflow: hidden; overscroll-behavior: none; }
+body { font-family: "VT323", "Courier New", monospace; font-size: 20px; color: var(--mc-text); text-shadow: 2px 2px 0 #3f3f3f; }
+.px { image-rendering: pixelated; }
+#map { position: fixed; inset: 0; background: #5d9c3a; }
+/* Pixel-grain overlay: a Minecraft texture tiled on top of the map (display only; Google tiles aren't modified). */
+#grain { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: .22; mix-blend-mode: overlay;
+  background: url(assets/mc/grass_top.png) 0 0 / 64px 64px; image-rendering: pixelated; }
+
+button { font: inherit; color: inherit; text-shadow: inherit; cursor: pointer; }
+.mc-btn {
+  border: 0; padding: 8px 14px; min-height: 44px; image-rendering: pixelated;
+  border-style: solid; border-width: 6px; border-image: url(assets/mc/button.png) 3 fill / 6px / 0 stretch;
+  background: transparent;
+}
+.mc-btn:hover, .mc-btn:active { border-image-source: url(assets/mc/button_hl.png); }
+.mc-btn:disabled { border-image-source: url(assets/mc/button_off.png); color: #a0a0a0; }
+.mc-btn.sq { width: 52px; height: 52px; padding: 0; display: grid; place-items: center; }
+.mc-btn.sq img { width: 28px; height: 28px; }
+.mc-btn.small { min-height: 36px; padding: 2px 10px; }
+.mc-btn.on { border-image-source: url(assets/mc/button_hl.png); filter: drop-shadow(0 0 6px var(--mc-gold)); }
+
+.mc-panel {
+  background: rgba(28, 19, 11, .94) url(assets/mc/dirt.png) 0 0 / 64px 64px; background-blend-mode: multiply;
+  border: 3px solid #000; box-shadow: inset 0 0 0 3px #6b4a2b, 0 4px 0 rgba(0,0,0,.4);
+  image-rendering: pixelated;
+}
+.mc-field { background: #000; border: 3px solid #a0a0a0; display: flex; align-items: center; gap: 8px; padding: 4px 8px; }
+.mc-field.plain { width: 100%; padding: 8px; color: #fff; font: inherit; }
+.mc-field img { width: 26px; height: 26px; flex: none; }
+#q { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: #fff; font: inherit; font-size: 22px; padding: 6px 0; text-shadow: none; }
+#q::placeholder { color: #777; }
+.x { background: none; border: 0; color: var(--mc-dim); font-size: 22px; padding: 4px 8px; }
+.dim { color: var(--mc-dim); }
+.small { font-size: 16px; }
+.err { color: #ff6b6b; margin: 6px 0; }
+.title { font-size: 24px; color: var(--mc-gold); }
+.row { display: flex; align-items: center; }
+.gap { gap: 8px; margin-top: 8px; }
+.grow { flex: 1; min-width: 0; }
+
+#top { position: fixed; z-index: 10; left: 10px; right: 10px; top: calc(10px + var(--safe-t)); max-width: 560px; }
+#suggest { list-style: none; margin: 4px 0 0; padding: 0; max-height: 50vh; overflow: auto; }
+#suggest li { padding: 8px 12px; border-bottom: 2px solid rgba(0,0,0,.5); cursor: pointer; }
+#suggest li:active, #suggest li:hover { background: rgba(255,216,58,.18); }
+#suggest .main { color: #fff; } #suggest .sec { color: var(--mc-dim); font-size: 17px; }
+
+#side { position: fixed; z-index: 10; right: 10px; top: calc(80px + var(--safe-t)); display: flex; flex-direction: column; gap: 8px; }
+
+#routecard { position: fixed; z-index: 10; left: 10px; right: 10px; bottom: calc(10px + var(--safe-b)); max-width: 560px; padding: 12px; }
+#steplist { margin: 8px 0 0; padding-left: 0; list-style-position: inside; max-height: 34vh; overflow: auto; font-size: 19px; }
+#steplist li { padding: 3px 0; } #steplist small { color: var(--mc-dim); }
+
+#navbanner { position: fixed; z-index: 11; left: 10px; right: 10px; top: calc(10px + var(--safe-t)); max-width: 560px; padding: 10px 12px; display: flex; align-items: center; gap: 12px; }
+#navbanner .turn { font-size: 40px; width: 48px; text-align: center; color: var(--mc-gold); }
+#navbanner .navtext { flex: 1; min-width: 0; font-size: 22px; line-height: 1.1; }
+body.navigating #top, body.navigating #routecard { display: none; }
+body.navigating #side { top: calc(100px + var(--safe-t)); }
+
+#toast { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); top: calc(140px + var(--safe-t)); background: #000; border: 3px solid #a0a0a0; padding: 6px 14px; max-width: 90vw; text-align: center; }
+
+.modal { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.6); display: grid; place-items: center; padding: 16px; }
+.modal[hidden], [hidden] { display: none !important; }
+.card { width: 100%; max-width: 460px; padding: 16px; }
+#costtable { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 19px; }
+#costtable td { padding: 2px 4px; border-bottom: 1px solid rgba(255,255,255,.15); }
+#costtable td:not(:first-child) { text-align: right; }
+.total { font-size: 24px; color: var(--mc-gold); }
+code { background: #000; padding: 0 4px; }
+input#keyinput { margin: 8px 0; }
+
+/* map markers */
+.pm { position: absolute; transform: translate(-50%, -100%); pointer-events: none; }
+.steve { width: 40px; height: 40px; image-rendering: pixelated; border: 3px solid #000; box-shadow: 0 0 0 2px #fff; transform: translateY(20px); background: #4b3621; }
+.steve-wrap { transform: translate(-50%, -50%); }
+.dest { width: 44px; height: 44px; image-rendering: pixelated; border: 3px solid #000; animation: bob 1.2s ease-in-out infinite; }
+.beam { position: absolute; left: 50%; bottom: 40px; width: 10px; height: 160px; transform: translateX(-50%);
+  background: linear-gradient(to top, rgba(255,216,58,.9), rgba(255,216,58,0)); }
+@keyframes bob { 50% { transform: translateY(-6px); } }

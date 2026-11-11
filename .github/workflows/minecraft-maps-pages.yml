@@ -1,0 +1,19 @@
+name: Deploy MC Maps to GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths: ['minecraft-maps/**']
+  workflow_dispatch:
+permissions: { contents: read, pages: write, id-token: write }
+concurrency: { group: pages, cancel-in-progress: true }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: '${{ steps.d.outputs.page_url }}' }
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./minecraft-maps/scripts/fetch-textures.sh
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: minecraft-maps }
+      - id: d
+        uses: actions/deploy-pages@v4
