@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#3b2a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MC Maps">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>MC Maps</title>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="grain"></div>
+
+  <!-- Search -->
+  <div id="top">
+    <div id="searchbar" class="mc-field">
+      <img src="assets/mc/compass.png" alt="" class="px">
+      <input id="q" type="search" placeholder="Search for a location..." autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+      <button id="qclear" class="x" aria-label="Clear" hidden>x</button>
+    </div>
+    <ul id="suggest" class="mc-panel" hidden></ul>
+  </div>
+
+  <!-- Navigation banner -->
+  <div id="navbanner" class="mc-panel" hidden>
+    <div id="navturn" class="turn">^</div>
+    <div class="navtext">
+      <div id="navinstr">...</div>
+      <div id="navdist" class="dim"></div>
+    </div>
+    <button id="navstop" class="mc-btn small">Stop</button>
+  </div>
+
+  <!-- Side buttons -->
+  <div id="side">
+    <button id="locate" class="mc-btn sq" aria-label="Find me"><img src="assets/mc/compass.png" class="px" alt=""></button>
+    <button id="mode" class="mc-btn sq" aria-label="Travel mode"><img id="modeimg" src="assets/mc/boots.png" class="px" alt=""></button>
+    <button id="creative" class="mc-btn sq" aria-label="Creative teleport mode"><img src="assets/mc/emerald.png" class="px" alt=""></button>
+    <button id="cost" class="mc-btn sq" aria-label="API usage and cost"><img src="assets/mc/map.png" class="px" alt=""></button>
+  </div>
+
+  <!-- Route card -->
+  <div id="routecard" class="mc-panel" hidden>
+    <div class="row">
+      <div class="grow">
+        <div id="rname" class="title">Destination</div>
+        <div id="rmeta" class="dim"></div>
+      </div>
+      <button id="rclose" class="x" aria-label="Close">x</button>
+    </div>
+    <div class="row gap">
+      <button id="rstart" class="mc-btn grow">Start</button>
+      <button id="rsteps" class="mc-btn grow">Steps</button>
+    </div>
+    <ol id="steplist" hidden></ol>
+  </div>
+
+  <div id="toast" hidden></div>
+
+  <!-- Cost modal -->
+  <div id="costmodal" class="modal" hidden>
+    <div class="mc-panel card">
+      <div class="title">API usage (this device)</div>
+      <div class="dim" id="costmonth"></div>
+      <table id="costtable"></table>
+      <div class="total" id="costtotal"></div>
+      <p class="dim small">Counts are tracked in this app only, and prices are rough estimates (edit them in <code>app.js</code>). Your real bill is in Google Cloud Console &rarr; Billing &rarr; Reports.</p>
+      <div class="row gap">
+        <button id="costreset" class="mc-btn grow">Reset</button>
+        <button id="keyreset" class="mc-btn grow">Change key</button>
+        <button id="costclose" class="mc-btn grow">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API key modal -->
+  <div id="keymodal" class="modal" hidden>
+    <div class="mc-panel card">
+      <div class="title">Enter your Google Maps API key</div>
+      <p class="dim">Stored only in this browser (localStorage). It is never uploaded anywhere except to Google. See README for how to create and restrict one.</p>
+      <input id="keyinput" class="mc-field plain" type="password" placeholder="AIza..." autocomplete="off" spellcheck="false">
+      <div id="keyerr" class="err" hidden></div>
+      <button id="keysave" class="mc-btn">Save &amp; load map</button>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
